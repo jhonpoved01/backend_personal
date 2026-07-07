@@ -1,17 +1,13 @@
 const express = require('express');
+const tasksController = require('../controllers/tasks.controller');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.json({
-        message: 'Aquí se listarán las tareas'
-    });
-});
-
-router.post('/', (req, res) => {
-    res.json({
-        message: 'Aquí se creará una tarea'
-    });
-});
+router.get('/', tasksController.getTasks);
+router.post('/', tasksController.createTask);
+router.get('/:id', tasksController.getTaskById);
+router.put('/:id', tasksController.updateTask);
+router.delete('/:id', tasksController.deleteTask);
+router.patch('/:id/status', tasksController.updateTaskStatus);
 
 module.exports = router;
