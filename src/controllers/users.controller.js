@@ -29,7 +29,7 @@ const validateUserData = (userData, currentUserId = null) => {
     const existingUser = usersModel.getUserByEmail(userData.email);
 
     if (existingUser && existingUser.id !== Number(currentUserId)) {
-        return 'El email ya esta registrado';
+        return 'El email ya está registrado';
     }
 
     return null;

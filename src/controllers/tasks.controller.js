@@ -13,7 +13,7 @@ const validateTaskData = (taskData) => {
     const priority = taskData.priority || 'media';
 
     if (!taskData.title) {
-        return 'El titulo es obligatorio';
+        return 'El título es obligatorio';
     }
 
     if (!validStatuses.includes(status)) {
@@ -125,7 +125,7 @@ const validateUserIds = (userIds) => {
     }
 
     if (userIds.length === 0) {
-        return 'userIds no debe estar vacio';
+        return 'userIds no debe estar vacío';
     }
 
     if (hasDuplicatedValues(userIds)) {
@@ -204,7 +204,7 @@ const removeUserFromTask = (req, res) => {
 
     if (!updatedTask) {
         return res.status(404).json({
-            message: 'El usuario no esta asignado a esta tarea'
+            message: 'El usuario no está asignado a esta tarea'
         });
     }
 
