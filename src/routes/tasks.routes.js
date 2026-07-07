@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get('/', tasksController.getTasks);
 router.post('/', tasksController.createTask);
+router.get('/filter', tasksController.filterTasks);
 router.post('/:taskId/assign', tasksController.assignUsersToTask);
 router.get('/:taskId/users', tasksController.getTaskUsers);
 router.delete('/:taskId/users/:userId', tasksController.removeUserFromTask);

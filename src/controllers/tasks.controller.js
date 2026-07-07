@@ -214,6 +214,36 @@ const removeUserFromTask = (req, res) => {
     });
 };
 
+const filterTasks = (req, res) => {
+    const { userId, status, priority } = req.query;
+
+    if (userId && !usersModel.getUserById(userId)) {
+        return res.status(404).json({
+            message: 'Usuario no encontrado'
+        });
+    }
+
+    if (status && !validStatuses.includes(status)) {
+        return res.status(400).json({
+            message: 'El estado debe ser pendiente, en_progreso o completada'
+        });
+    }
+
+    if (priority && !validPriorities.includes(priority)) {
+        return res.status(400).json({
+            message: 'La prioridad debe ser baja, media o alta'
+        });
+    }
+
+    const filteredTasks = tasksModel.filterTasks({
+        userId,
+        status,
+        priority
+    });
+
+    return res.status(200).json(filteredTasks);
+};
+
 module.exports = {
     getTasks,
     createTask,
@@ -223,5 +253,6 @@ module.exports = {
     updateTaskStatus,
     assignUsersToTask,
     getTaskUsers,
-    removeUserFromTask
+    removeUserFromTask,
+    filterTasks
 };

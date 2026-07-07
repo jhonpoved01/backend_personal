@@ -104,6 +104,16 @@ const removeUserFromTask = (taskId, userId) => {
     return task;
 };
 
+const filterTasks = (filters) => {
+    return database.tasks.filter((task) => {
+        const matchesUser = !filters.userId || task.assignedUsers.includes(Number(filters.userId));
+        const matchesStatus = !filters.status || task.status === filters.status;
+        const matchesPriority = !filters.priority || task.priority === filters.priority;
+
+        return matchesUser && matchesStatus && matchesPriority;
+    });
+};
+
 module.exports = {
     getAllTasks,
     getTaskById,
@@ -113,5 +123,6 @@ module.exports = {
     updateTaskStatus,
     assignUsersToTask,
     getTasksByUserId,
-    removeUserFromTask
+    removeUserFromTask,
+    filterTasks
 };
