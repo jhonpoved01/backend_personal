@@ -1,17 +1,14 @@
 const express = require('express');
+const usersController = require('../controllers/users.controller');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.json({
-        message: 'Aquí se listarán los usuarios'
-    });
-});
-
-router.post('/', (req, res) => {
-    res.json({
-        message: 'Aquí se creará un usuario'
-    });
-});
+router.get('/', usersController.getUsers);
+router.post('/', usersController.createUser);
+router.get('/:userId/tasks', usersController.getUserTasks);
+router.get('/:id', usersController.getUserById);
+router.put('/:id', usersController.updateUser);
+router.delete('/:id', usersController.deleteUser);
+router.patch('/:id/status', usersController.updateUserStatus);
 
 module.exports = router;

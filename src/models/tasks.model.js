@@ -1,0 +1,128 @@
+const database = require('../data/database');
+
+const getAllTasks = () => {
+    return database.tasks;
+};
+
+const getTaskById = (id) => {
+    return database.tasks.find((task) => task.id === Number(id));
+};
+
+const createTask = (taskData) => {
+    const nextId = database.tasks.length > 0
+        ? Math.max(...database.tasks.map((task) => task.id)) + 1
+        : 1;
+
+    const newTask = {
+        id: nextId,
+        title: taskData.title,
+        description: taskData.description || '',
+        status: taskData.status || 'pendiente',
+        priority: taskData.priority || 'media',
+        assignedUsers: taskData.assignedUsers || [],
+        createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    database.tasks.push(newTask);
+    return newTask;
+};
+
+const updateTask = (id, taskData) => {
+    const task = getTaskById(id);
+
+    if (!task) {
+        return null;
+    }
+
+    task.title = taskData.title;
+    task.description = taskData.description || '';
+    task.status = taskData.status || 'pendiente';
+    task.priority = taskData.priority || 'media';
+    task.assignedUsers = taskData.assignedUsers || [];
+
+    return task;
+};
+
+const deleteTask = (id) => {
+    const taskIndex = database.tasks.findIndex((task) => task.id === Number(id));
+
+    if (taskIndex === -1) {
+        return null;
+    }
+
+    const deletedTasks = database.tasks.splice(taskIndex, 1);
+    return deletedTasks[0];
+};
+
+const updateTaskStatus = (id, status) => {
+    const task = getTaskById(id);
+
+    if (!task) {
+        return null;
+    }
+
+    task.status = status;
+    return task;
+};
+
+const assignUsersToTask = (taskId, userIds) => {
+    const task = getTaskById(taskId);
+
+    if (!task) {
+        return null;
+    }
+
+    const currentAssignedUsers = task.assignedUsers || [];
+    task.assignedUsers = [...new Set([...currentAssignedUsers, ...userIds.map(Number)])];
+
+    return task;
+};
+
+const getTasksByUserId = (userId) => {
+    return database.tasks.filter((task) => {
+        return task.assignedUsers.includes(Number(userId));
+    });
+};
+
+const removeUserFromTask = (taskId, userId) => {
+    const task = getTaskById(taskId);
+
+    if (!task) {
+        return null;
+    }
+
+    const numericUserId = Number(userId);
+
+    if (!task.assignedUsers.includes(numericUserId)) {
+        return false;
+    }
+
+    task.assignedUsers = task.assignedUsers.filter((assignedUserId) => {
+        return assignedUserId !== numericUserId;
+    });
+
+    return task;
+};
+
+const filterTasks = (filters) => {
+    return database.tasks.filter((task) => {
+        const matchesUser = !filters.userId || task.assignedUsers.includes(Number(filters.userId));
+        const matchesStatus = !filters.status || task.status === filters.status;
+        const matchesPriority = !filters.priority || task.priority === filters.priority;
+
+        return matchesUser && matchesStatus && matchesPriority;
+    });
+};
+
+module.exports = {
+    getAllTasks,
+    getTaskById,
+    createTask,
+    updateTask,
+    deleteTask,
+    updateTaskStatus,
+    assignUsersToTask,
+    getTasksByUserId,
+    removeUserFromTask,
+    filterTasks
+};
