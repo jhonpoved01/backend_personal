@@ -1,4 +1,5 @@
 const usersModel = require('../models/users.model');
+const tasksModel = require('../models/tasks.model');
 
 const validRoles = ['admin', 'usuario'];
 
@@ -118,11 +119,26 @@ const updateUserStatus = (req, res) => {
     return res.status(200).json(updatedUser);
 };
 
+const getUserTasks = (req, res) => {
+    const user = usersModel.getUserById(req.params.userId);
+
+    if (!user) {
+        return res.status(404).json({
+            message: 'Usuario no encontrado'
+        });
+    }
+
+    const tasks = tasksModel.getTasksByUserId(req.params.userId);
+
+    return res.status(200).json(tasks);
+};
+
 module.exports = {
     getUsers,
     createUser,
     getUserById,
     updateUser,
     deleteUser,
-    updateUserStatus
+    updateUserStatus,
+    getUserTasks
 };

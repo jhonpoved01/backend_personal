@@ -65,11 +65,53 @@ const updateTaskStatus = (id, status) => {
     return task;
 };
 
+const assignUsersToTask = (taskId, userIds) => {
+    const task = getTaskById(taskId);
+
+    if (!task) {
+        return null;
+    }
+
+    const currentAssignedUsers = task.assignedUsers || [];
+    task.assignedUsers = [...new Set([...currentAssignedUsers, ...userIds.map(Number)])];
+
+    return task;
+};
+
+const getTasksByUserId = (userId) => {
+    return database.tasks.filter((task) => {
+        return task.assignedUsers.includes(Number(userId));
+    });
+};
+
+const removeUserFromTask = (taskId, userId) => {
+    const task = getTaskById(taskId);
+
+    if (!task) {
+        return null;
+    }
+
+    const numericUserId = Number(userId);
+
+    if (!task.assignedUsers.includes(numericUserId)) {
+        return false;
+    }
+
+    task.assignedUsers = task.assignedUsers.filter((assignedUserId) => {
+        return assignedUserId !== numericUserId;
+    });
+
+    return task;
+};
+
 module.exports = {
     getAllTasks,
     getTaskById,
     createTask,
     updateTask,
     deleteTask,
-    updateTaskStatus
+    updateTaskStatus,
+    assignUsersToTask,
+    getTasksByUserId,
+    removeUserFromTask
 };
